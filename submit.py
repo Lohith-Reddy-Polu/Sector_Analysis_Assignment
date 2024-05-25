@@ -3,8 +3,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import yfinance as yf
 import requests
-
-
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
 #Task1
 
 nifty_indices = {
@@ -56,7 +58,6 @@ for key,item in variable_indices.items():
     econ_data[key] = fetch_data(item)
     econ_data[key].to_csv(f"{key}.csv")
     econ_data[key] = pd.read_csv(f'{key}.csv',index_col='date',parse_dates=True)
-    
 
 #Task 2
 
@@ -76,24 +77,23 @@ for key,val in econ_data.items():
     plt.savefig(f'{key}.jpg')
     plt.close()
 
-for key in econ_data:
-    econ_data[key] = econ_data[key].resample('M').ffill().reset_index('date')
-    econ_data[key].rename(columns = {'date' : 'Date'},inplace = True)
-    econ_data[key].set_index('Date',inplace = True)
+# for key in econ_data:
+#     econ_data[key] = econ_data[key].resample('M').ffill().reset_index('date')
+#     econ_data[key].rename(columns = {'date' : 'Date'},inplace = True)
+#     econ_data[key].set_index('Date',inplace = True)
 
-print(econ_data['GDP'].columns)
-merged_data = pd.DataFrame()
-for key in nifty_data:
-    if merged_data.empty:
-        merged_data = pd.DataFrame(nifty_data[key]['Close'])
-    else:
-        merged_data = merged_data.join(nifty_data[key]['Close'], on='Date', rsuffix=f'{key}')
+# print(econ_data['GDP'].columns)
+# merged_data = pd.DataFrame()
+# for key in nifty_data:
+#     if merged_data.empty:
+#         merged_data = pd.DataFrame(nifty_data[key]['Close'])
+#     else:
+#         merged_data = merged_data.join(nifty_data[key]['Close'], on='Date', rsuffix=f'{key}')
 
-for key in econ_data:
-    merged_data = merged_data.join(econ_data[key], on='Date', rsuffix=f'{key}')
+# for key in econ_data:
+#     print(econ_data[key]['value'])
+#     merged_data = merged_data.join(econ_data[key]['value'], on='Date', rsuffix=f'{key}')
 
-merged_data.to_csv('merge.csv')
-print(merged_data)
+# merged_data.to_csv('merge.csv')
+# print(merged_data)
 #Task 3
-
-
